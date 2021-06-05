@@ -7,16 +7,14 @@ import           Hakyll
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
-    match "css/*" $ do
+    match "assets/css/*" $ do
         route   idRoute
         compile compressCssCompiler
 
-    match "index.html" $ do
-        route idRoute
-        compile $ do
-            getResourceBody
-                >>= applyAsTemplate indexCtx
-                >>= loadAndApplyTemplate "templates/default.html" indexCtx
-                >>= relativizeUrls
+    match "index.md" $ do
+        route   $ setExtension "html"
+        compile $ pandocCompiler
+            >>= loadAndApplyTemplate "_layouts/default.html" defaultContext
+            >>= relativizeUrls
 
-    match "templates/*" $ compile templateBodyCompiler
+    match "_layouts/*" $ compile templateBodyCompiler
